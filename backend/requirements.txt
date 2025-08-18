@@ -8,3 +8,4 @@ python-dotenv
 feedparser
 flask
 flask-cors
+apify-client
