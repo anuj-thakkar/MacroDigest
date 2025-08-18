@@ -11,7 +11,8 @@ def init_db():
             entertainment INTEGER DEFAULT 0,
             politics INTEGER DEFAULT 0,
             economics INTEGER DEFAULT 0,
-            technology INTEGER DEFAULT 0
+            technology INTEGER DEFAULT 0,
+            updt_ts TIMESTAMP
         )
     ''')
     conn.commit()

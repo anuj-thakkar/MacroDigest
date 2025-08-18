@@ -5,7 +5,6 @@ import logging
 import sqlite3
 
 routes = Blueprint('routes', __name__)
-
 logger = logging.getLogger(__name__)
 
 @routes.route("/digest", methods=["POST"])
@@ -20,7 +19,6 @@ def get_digest():
     #print("Digest:", digest)
     #return jsonify({"digest": digest})
     return jsonify({"digest": articles})
-
 
 @routes.route('/preferences', methods=['POST'])
 def save_preferences():
@@ -49,7 +47,7 @@ def save_preferences():
         conn = sqlite3.connect('database/preferences.db')
         c = conn.cursor()
         print('Inserting into database...')
-        c.execute('INSERT INTO preferences (email, sports, entertainment, politics, economics, technology) VALUES (?, ?, ?, ?, ?, ?)',
+        c.execute('INSERT INTO preferences (email, sports, entertainment, politics, economics, technology, updt_ts) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)',
                   (email, topic_fields['Sports'], topic_fields['Entertainment / Pop Culture'], topic_fields['Politics'], topic_fields['Economics'], topic_fields['Technology']))
         conn.commit()
         conn.close()
@@ -59,3 +57,27 @@ def save_preferences():
         print('Database error:', e)
         return jsonify({'error': str(e)}), 500
 
+@routes.route('/view_preferences', methods=['GET'])
+def view_preferences():
+    email = request.args.get('email')
+    if not email:
+        return jsonify({'error': 'Email required'}), 400
+    try:
+        conn = sqlite3.connect('database/preferences.db')
+        c = conn.cursor()
+        c.execute('SELECT sports, entertainment, politics, economics, technology FROM preferences WHERE email = ? ORDER BY updt_ts DESC LIMIT 1', (email,))
+        row = c.fetchone()
+        conn.close()
+        if not row:
+            return jsonify({'topics': []})
+        topic_map = [
+            ('Sports', row[0]),
+            ('Entertainment / Pop Culture', row[1]),
+            ('Politics', row[2]),
+            ('Economics', row[3]),
+            ('Technology', row[4])
+        ]
+        selected_topics = [name for name, val in topic_map if val == 1]
+        return jsonify({'topics': selected_topics})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
