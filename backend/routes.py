@@ -1,3 +1,4 @@
+from utils import get_user_latest_preferences
 from flask import Blueprint, request, jsonify
 from news_fetcher import fetch_news
 from summarizer import summarize_articles
@@ -63,11 +64,7 @@ def view_preferences():
     if not email:
         return jsonify({'error': 'Email required'}), 400
     try:
-        conn = sqlite3.connect('database/preferences.db')
-        c = conn.cursor()
-        c.execute('SELECT sports, entertainment, politics, economics, technology FROM preferences WHERE email = ? ORDER BY updt_ts DESC LIMIT 1', (email,))
-        row = c.fetchone()
-        conn.close()
+        row = get_user_latest_preferences(email)
         if not row:
             return jsonify({'topics': []})
         topic_map = [
@@ -79,5 +76,49 @@ def view_preferences():
         ]
         selected_topics = [name for name, val in topic_map if val == 1]
         return jsonify({'topics': selected_topics})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+
+@routes.route('/generate_summaries', methods=['GET'])
+def generate_summaries():
+    email = request.args.get('email')
+
+    print('Email received:', email)
+    if not email:
+        print('No email provided')
+        return jsonify({'error': 'Email required'}), 400
+    try:
+        row = get_user_latest_preferences(email)
+        print('Latest preferences:', row)
+        if not row:
+            print('No preferences found')
+            return jsonify({'error': 'No preferences found'}), 404
+        topic_map = [
+            ('Sports', row[0]),
+            ('Entertainment / Pop Culture', row[1]),
+            ('Politics', row[2]),
+            ('Economics', row[3]),
+            ('Technology', row[4])
+        ]
+        selected_topics = [name for name, val in topic_map if val == 1]
+        print('Selected topics:', selected_topics)
+        articles_dict = {}  # key = topic, value = list of articles
+
+        for topic in selected_topics:
+            articles = fetch_news(topic)[:5]  # Get top 5 articles
+            print('Fetching articles for "', topic, '"...')
+
+            articles_dict[topic] = articles
+            for key, articles in articles_dict.items():
+                print("Articles for topic '", key, "':", articles)
+        """
+            for topic in selected_topics:
+            articles = fetch_news(topic)[:5]  # Get top 5 articles
+            summary = summarize_articles(articles)
+            summaries[topic] = summary
+        """
+        return jsonify({'articles': articles_dict})
+        #return jsonify({'summaries': summaries})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
