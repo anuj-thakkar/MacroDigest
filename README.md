@@ -25,7 +25,8 @@ MacroDigest is a full-stack web app that delivers concise news summaries based o
 - Gmail requires an App Password for SMTP. 
 - [How to get Google App Password](https://support.google.com/mail/answer/185833?hl=en)
 3. Python 3.10+ and Node
-
+- `frontend/package.json`
+- `backend/requirements.txt`
 
 ### Backend
 1. Install dependencies:

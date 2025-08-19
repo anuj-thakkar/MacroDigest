@@ -1,3 +1,11 @@
+"""
+============================================================
+ news_fetcher.py
+------------------------------------------------------------
+ Fetches news articles for a given topic using Apify Google News Scraper.
+ Used in Daily Digest to retrieve finance/economics news for summaries.
+============================================================
+"""
 from apify_client import ApifyClient
 import os
 

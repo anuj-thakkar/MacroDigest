@@ -1,3 +1,12 @@
+"""
+============================================================
+ routes.py
+------------------------------------------------------------
+ Defines the API routes for the MacroDigest application.
+ Handles user preferences, fetching daily articles, and generating summaries.
+============================================================
+"""
+
 import subprocess
 import json
 import os
