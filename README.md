@@ -29,7 +29,7 @@ Daily Digest is a full-stack web app that delivers concise news summaries based 
 	```
 3. Run the backend server:
 	```sh
-	flask run
+	python backend/app.py
 	```
 
 ### Frontend
@@ -40,11 +40,11 @@ Daily Digest is a full-stack web app that delivers concise news summaries based 
 	```
 2. Start the frontend:
 	```sh
-	npm start
+	cd frontend && npm start
 	```
 
 ## Usage
-- Go to `http://localhost:3000` to view and manage your preferences.
+- Go to `http://localhost:5000` to view and manage your preferences.
 - Go to `/settings` to update your selected topics.
 
 ## API Endpoints
