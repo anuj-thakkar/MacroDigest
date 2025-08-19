@@ -6,9 +6,11 @@
 Daily Digest is a full-stack web app that delivers concise news summaries based on your selected topics. Users can subscribe to topics and receive daily digests tailored to their preferences.
 
 ## Features
-- Select your preferred news topics (Sports, Entertainment / Pop Culture, Politics, Economics, Technology, Business)
-- View and update your preferences
-- Get daily news digests
+- Select your preferred news topics (choose from: Market Volatility & Options, Equities and Indexes, Macroeconomics, Regulatory & Compliance News, Alternative Assets & Innovation)
+- View and update your topic preferences easily
+- Receive personalized daily news digests via email
+- Access concise summaries for each selected topic
+- Stay informed with up-to-date articles tailored to your interests
 
 ## Project Structure
 - `backend/` — Flask API, SQLite database, news fetching and summarization
@@ -23,11 +25,11 @@ Daily Digest is a full-stack web app that delivers concise news summaries based 
 	cd backend
 	pip install -r requirements.txt
 	```
-2. Set up the database:
+2. Create database (if .db file does not exist in /database):
 	```sh
 	python ../database/preferences_db_setup.py
 	```
-3. Run the backend server:
+3. Kick off the backend server:
 	```sh
 	python backend/app.py
 	```
@@ -43,13 +45,35 @@ Daily Digest is a full-stack web app that delivers concise news summaries based 
 	cd frontend && npm start
 	```
 
-## Usage
-Go to `http://localhost:3000` to view and manage your preferences in the web app.
-When you enter your email and load your preferences on the main page, your selected topics and email are automatically synced across the app.
-When you navigate to the Settings page, your email and topic selections are pre-filled—no need to re-enter your email or click "Load" again.
-Update your preferences in Settings and save; changes are reflected everywhere.
-
 ## API Endpoints
-- `POST /preferences` — Save preferences
-- `GET /view_preferences?email=...` — View preferences for an email
-- `POST /digest` — Get news digest for a topic
+| Method | Path                        | Description                                   |
+|--------|-----------------------------|-----------------------------------------------|
+| POST   | `/preferences`              | Set/Update user news topic preferences        |
+| GET    | `/view_preferences`         | Retrieve current user topic preferences       |
+| GET    | `/fetch_daily_articles`     | Fetch daily news articles for all topics      |
+| GET    | `/generate_topic_summaries` | Generate summaries with articles passed in    |
+| POST   | `/send_digest_now`          | Send the daily digest email immediately       |
+| GET    | `/`                         | Welcome endpoint                              |
+
+Each endpoint is designed to support the core features of Daily Digest, including managing preferences, fetching news, generating summaries, and sending digests.
+
+## Environment Variables
+
+The following environment variables are used throughout the codebase:
+
+- `OPENAI_API_KEY`: Your OpenAI API key for generating summaries (used in backend/summarizer.py).
+- `APIFY_CLIENT_TOKEN`: Your Apify API token for news scraping ([text](https://apify.com/pricing), [text](https://apify.com/store) ).
+- `DAILY_DIGEST_GMAIL_USER`: Gmail address used to send digests (used in backend/send_daily_digest.py).
+- `DAILY_DIGEST_GMAIL_PASS`: Gmail App Password for sending digests (used in backend/send_daily_digest.py).
+
+Set these in your shell or `.env` file before running the backend:
+
+```sh
+export OPENAI_API_KEY=your_openai_key
+export APIFY_CLIENT_TOKEN=your_apify_token
+export DAILY_DIGEST_GMAIL_USER=youraddress@gmail.com
+export DAILY_DIGEST_GMAIL_PASS="your_app_password"
+```
+
+**Note:** Gmail requires an App Password for SMTP. See Google Account security settings to generate one.
+How to get Google App Password: [Google Support Guide](https://support.google.com/mail/answer/185833?hl=en)

@@ -1,3 +1,4 @@
+import subprocess
 import json
 import os
 from datetime import datetime
@@ -74,7 +75,7 @@ def view_preferences():
     try:
         row = get_user_latest_preferences(email)
         if not row:
-            return jsonify({'topics': []})
+            return jsonify({'error': 'User not found'}), 404
         topic_map = [
             ('Market Volatility & Options', row[0]),
             ('Equities and Indexes', row[1]),
@@ -151,4 +152,25 @@ def generate_topic_summaries():
         return jsonify({'message': f'Topic summaries saved to {summaries_path}', 'summaries': topic_summaries})
     except Exception as e:
         logger.error(f"Error generating topic summaries: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@routes.route('/send_digest_now', methods=['POST'])
+def send_digest_now():
+    data = request.json or {}
+    email = data.get('email')
+    if not email:
+        return jsonify({'error': 'Email required'}), 400
+    try:
+        # Run the send_daily_digest.py script for a single user
+        result = subprocess.run([
+            'python',
+            os.path.join(os.path.dirname(__file__), 'send_daily_digest.py'),
+            '--email',
+            email
+        ], capture_output=True, text=True)
+        if result.returncode == 0:
+            return jsonify({'message': 'Digest sent successfully!', 'output': result.stdout})
+        else:
+            return jsonify({'error': 'Failed to send digest.', 'details': result.stderr}), 500
+    except Exception as e:
         return jsonify({'error': str(e)}), 500

@@ -21,15 +21,19 @@ function SettingsPage() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [saveDisabled, setSaveDisabled] = useState(true);
+  const [successMsg, setSuccessMsg] = useState('');
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccessMsg('');
     try {
-  const res = await fetch(`http://127.0.0.1:5000/view_preferences?email=${encodeURIComponent(email)}`);
+      const res = await fetch(`http://127.0.0.1:5000/view_preferences?email=${encodeURIComponent(email)}`);
       const data = await res.json();
       setTopics(Array.isArray(data.topics) ? data.topics : []);
+      setSaveDisabled(true); // Disable Save after loading
     } catch {
       setTopics([]);
       setError('Could not load preferences.');
@@ -38,17 +42,21 @@ function SettingsPage() {
   };
 
   const handleTopicToggle = (topic) => {
-    setTopics((prev) =>
-      prev.includes(topic)
+    setTopics((prev) => {
+      const newTopics = prev.includes(topic)
         ? prev.filter((t) => t !== topic)
-        : [...prev, topic]
-    );
+        : [...prev, topic];
+      setSaveDisabled(false); // Enable Save when topics change
+      setSuccessMsg(''); // Clear success message on change
+      return newTopics;
+    });
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
     setError('');
+    setSuccessMsg('');
     try {
       const res = await fetch('http://127.0.0.1:5000/preferences', {
         method: 'POST',
@@ -56,6 +64,8 @@ function SettingsPage() {
         body: JSON.stringify({ email, topics }),
       });
       if (!res.ok) throw new Error('Save failed');
+      setSuccessMsg('Preferences saved successfully!');
+      setSaveDisabled(true); // Disable Save after saving
     } catch {
       setError('Could not save preferences.');
     }
@@ -95,8 +105,9 @@ function SettingsPage() {
             ))}
           </div>
           <div style={{ height: '1rem' }}></div>
-            <button type="submit" disabled={saving} style={{ marginTop: '0.5rem', padding: '0.5rem 1rem', fontSize: '1rem', borderRadius: '4px', background: '#1976d2', color: '#fff', border: 'none', cursor: 'pointer' }}>Save</button>
+            <button type="submit" disabled={saving || saveDisabled} style={{ marginTop: '0.5rem', padding: '0.5rem 1rem', fontSize: '1rem', borderRadius: '4px', background: saveDisabled ? '#bdbdbd' : '#1976d2', color: '#fff', border: 'none', cursor: saveDisabled ? 'not-allowed' : 'pointer' }}>Save</button>
         </form>
+        {successMsg && <div style={{ color: '#43a047', textAlign: 'center', marginBottom: '1rem', fontWeight: 500 }}>{successMsg}</div>}
         {error && <div style={{ color: 'red', textAlign: 'center', marginBottom: '1rem' }}>{error}</div>}
         <div style={{ textAlign: 'center', marginTop: '2rem' }}>
           <a href="/" style={{ fontSize: '1.2rem', color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}>Back to Main</a>

@@ -5,7 +5,7 @@ from routes import routes
 
 app = Flask(__name__)
 CORS(app)  # Enables CORS for all routes
-app.register_blueprint(routes) # what does register mean? it means that the routes defined in the routes module will be available in the app 
+app.register_blueprint(routes) # Register the routes blueprint so the routes defined in the routes script will be available in the app
 
 @app.route('/')
 def home():

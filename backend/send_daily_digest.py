@@ -7,14 +7,18 @@ from datetime import datetime
 import os
 import markdown2
 import time
+import logging
+import argparse
 
-# CONFIGURATION
-GMAIL_USER = os.getenv('DAILY_DIGEST_GMAIL_USER')  # e.g. 'youraddress@gmail.com'
-GMAIL_PASS = os.getenv('DAILY_DIGEST_GMAIL_PASS')  # App password
+logging.basicConfig(level=logging.INFO)
+
+# Email SMTP Configuration
+GMAIL_USER = os.getenv('DAILY_DIGEST_GMAIL_USER')
+GMAIL_PASS = os.getenv('DAILY_DIGEST_GMAIL_PASS') # check README for details
 DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'database', 'preferences.db'))
 SUMMARIES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'database', 'daily_summaries'))
-print(DB_PATH)
-print(SUMMARIES_DIR)
+logging.info(f"Database path: {DB_PATH}")
+logging.info(f"Summaries directory: {SUMMARIES_DIR}")
 
 # Helper: get all users and their topic preferences
 def get_all_user_preferences():
@@ -59,6 +63,7 @@ def format_email_body(user_topics, summaries):
     return body
 
 # Send email via Gmail SMTP
+
 def send_email(to_email, subject, html_body):
     msg = MIMEMultipart()
     msg['From'] = GMAIL_USER
@@ -74,15 +79,28 @@ def send_email(to_email, subject, html_body):
         print(f"Failed to send to {to_email}: {e}")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Send daily digest emails.")
+    parser.add_argument('--email', type=str, help='Send digest only to this email')
+    args = parser.parse_args()
+
     users = get_all_user_preferences()
     summaries = get_today_summaries()
     if not summaries:
         print("No summaries found for today.")
         exit(1)
-    for email, topics in users.items():
-        if not topics:
-            continue
-        body = format_email_body(topics, summaries)
-        send_email(email, "Your Daily Digest", body)
 
-    print(f"All digests sent at {time.strftime('%Y-%m-%d %H:%M:%S')}.")
+    if args.email:
+        topics = users.get(args.email)
+        if not topics:
+            print(f"No topics found for {args.email}.")
+        else:
+            body = format_email_body(topics, summaries)
+            send_email(args.email, "Your Daily Digest", body)
+            print(f"Digest sent to {args.email} at {time.strftime('%Y-%m-%d %H:%M:%S')}.")
+    else:
+        for email, topics in users.items():
+            if not topics:
+                continue
+            body = format_email_body(topics, summaries)
+            send_email(email, f"Your Daily Digest: {time.strftime('%m-%d-%Y')}", body) # email, subject, body
+        print(f"All digests sent at {time.strftime('%Y-%m-%d %H:%M:%S')}.")
