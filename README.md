@@ -1,9 +1,7 @@
-# Daily Digest
-
-**TL;DR for news.**
+# MacroDigest
 
 ## Overview
-Daily Digest is a full-stack web app that delivers concise news summaries based on your selected topics. Users can subscribe to topics and receive daily digests tailored to their preferences.
+MacroDigest is a full-stack web app that delivers concise news summaries based on your selected topics. Users can subscribe to topics and receive daily digests tailored to their preferences.
 
 ## Features
 - Select your preferred news topics (choose from: Market Volatility & Options, Equities and Indexes, Macroeconomics, Regulatory & Compliance News, Alternative Assets & Innovation)
@@ -18,6 +16,16 @@ Daily Digest is a full-stack web app that delivers concise news summaries based 
 - `database/` — Database setup scripts
 
 ## Setup Instructions
+
+### Prerequisites
+1. Apify (Web Scraping Tool)
+- [Apify free trial](https://apify.com/pricing) 
+- [Apify Actors](https://apify.com/store)
+2. Google App Password
+- Gmail requires an App Password for SMTP. 
+- [How to get Google App Password](https://support.google.com/mail/answer/185833?hl=en)
+3. Python 3.10+ and Node
+
 
 ### Backend
 1. Install dependencies:
@@ -62,7 +70,7 @@ Each endpoint is designed to support the core features of Daily Digest, includin
 The following environment variables are used throughout the codebase:
 
 - `OPENAI_API_KEY`: Your OpenAI API key for generating summaries (used in backend/summarizer.py).
-- `APIFY_CLIENT_TOKEN`: Your Apify API token for news scraping ([text](https://apify.com/pricing), [text](https://apify.com/store) ).
+- `APIFY_CLIENT_TOKEN`: Your Apify API token for news scraping.
 - `DAILY_DIGEST_GMAIL_USER`: Gmail address used to send digests (used in backend/send_daily_digest.py).
 - `DAILY_DIGEST_GMAIL_PASS`: Gmail App Password for sending digests (used in backend/send_daily_digest.py).
 
@@ -72,8 +80,5 @@ Set these in your shell or `.env` file before running the backend:
 export OPENAI_API_KEY=your_openai_key
 export APIFY_CLIENT_TOKEN=your_apify_token
 export DAILY_DIGEST_GMAIL_USER=youraddress@gmail.com
-export DAILY_DIGEST_GMAIL_PASS="your_app_password"
+export DAILY_DIGEST_GMAIL_PASS="**** **** **** ****" 
 ```
-
-**Note:** Gmail requires an App Password for SMTP. See Google Account security settings to generate one.
-How to get Google App Password: [Google Support Guide](https://support.google.com/mail/answer/185833?hl=en)
