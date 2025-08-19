@@ -19,6 +19,7 @@ MacroDigest is a full-stack web app that delivers concise news summaries based o
 
 ### Prerequisites
 1. Apify (Web Scraping Tool)
+- API token needed for APIFY
 - [Apify free trial](https://apify.com/pricing) 
 - [Apify Actors](https://apify.com/store)
 2. Google App Password
@@ -27,6 +28,17 @@ MacroDigest is a full-stack web app that delivers concise news summaries based o
 3. Python 3.10+ and Node
 - `frontend/package.json`
 - `backend/requirements.txt`
+
+### Virtual Environment Setup
+1. Create and activate a Python virtual environment:
+	```sh
+	python3 -m venv venv
+	source venv/bin/activate
+	```
+2. Upgrade pip (recommended):
+	```sh
+	pip install --upgrade pip
+	```
 
 ### Backend
 1. Install dependencies:
@@ -54,17 +66,11 @@ MacroDigest is a full-stack web app that delivers concise news summaries based o
 	cd frontend && npm start
 	```
 
-## API Endpoints
-| Method | Path                        | Description                                   |
-|--------|-----------------------------|-----------------------------------------------|
-| POST   | `/preferences`              | Set/Update user news topic preferences        |
-| GET    | `/view_preferences`         | Retrieve current user topic preferences       |
-| GET    | `/fetch_daily_articles`     | Fetch daily news articles for all topics      |
-| GET    | `/generate_topic_summaries` | Generate summaries with articles passed in    |
-| POST   | `/send_digest_now`          | Send the daily digest email immediately       |
-| GET    | `/`                         | Welcome endpoint                              |
-
-Each endpoint is designed to support the core features of Daily Digest, including managing preferences, fetching news, generating summaries, and sending digests.
+### Database
+1. Build database (if it does not exist)
+``` sh
+python database/preferences_db_setup.py
+```
 
 ## Environment Variables
 
@@ -83,3 +89,17 @@ export APIFY_CLIENT_TOKEN=your_apify_token
 export DAILY_DIGEST_GMAIL_USER=youraddress@gmail.com
 export DAILY_DIGEST_GMAIL_PASS="**** **** **** ****" 
 ```
+
+## API Endpoints
+| Method | Path                        | Description                                   |
+|--------|-----------------------------|-----------------------------------------------|
+| POST   | `/preferences`              | Set/Update user news topic preferences        |
+| GET    | `/view_preferences`         | Retrieve current user topic preferences       |
+| GET    | `/fetch_daily_articles`     | Fetch daily news articles for all topics      |
+| GET    | `/generate_topic_summaries` | Generate summaries with articles passed in    |
+| POST   | `/send_digest_now`          | Send the daily digest email immediately       |
+| GET    | `/`                         | Welcome endpoint                              |
+
+Each endpoint is designed to support the core features of Daily Digest, including managing preferences, fetching news, generating summaries, and sending digests.
+
+
