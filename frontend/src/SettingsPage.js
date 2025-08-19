@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 
 const TOPICS = [
   { label: 'Market Volatility & Options', value: 'Market Volatility & Options' },
@@ -10,6 +11,12 @@ const TOPICS = [
 
 function SettingsPage() {
   const [email, setEmail] = useState('');
+  // Auto-populate email from query param
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const emailParam = params.get('email');
+    if (emailParam) setEmail(emailParam);
+  }, []);
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -74,7 +81,7 @@ function SettingsPage() {
           <div style={{ textAlign: 'center', margin: '1rem 0' }}>Loading...</div>
         ) : null}
         <form onSubmit={handleSave} style={{ marginBottom: '1rem', textAlign: 'center' }}>
-          <div style={{ margin: '1rem 0', textAlign: 'left', display: 'inline-block' }}>
+          <div style={{ margin: '1rem 0 2.5rem 0', textAlign: 'left', display: 'inline-block' }}>
             {TOPICS.map(topic => (
               <label key={topic.value} style={{ display: 'block', fontSize: '1.15rem', margin: '0.5rem 0', cursor: 'pointer' }}>
                 <input
@@ -87,7 +94,8 @@ function SettingsPage() {
               </label>
             ))}
           </div>
-          <button type="submit" disabled={saving} style={{ marginTop: '1rem', padding: '0.5rem 1rem', fontSize: '1rem', borderRadius: '4px', background: '#1976d2', color: '#fff', border: 'none', cursor: 'pointer' }}>Save</button>
+          <div style={{ height: '1rem' }}></div>
+            <button type="submit" disabled={saving} style={{ marginTop: '0.5rem', padding: '0.5rem 1rem', fontSize: '1rem', borderRadius: '4px', background: '#1976d2', color: '#fff', border: 'none', cursor: 'pointer' }}>Save</button>
         </form>
         {error && <div style={{ color: 'red', textAlign: 'center', marginBottom: '1rem' }}>{error}</div>}
         <div style={{ textAlign: 'center', marginTop: '2rem' }}>

@@ -51,7 +51,10 @@ function MainView() {
         )}
       </header>
       <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-        <a href="/settings" style={{ fontSize: '1.2rem', color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}>Go to Settings</a>
+        <a
+          href={email ? `/settings?email=${encodeURIComponent(email)}` : "/settings"}
+          style={{ fontSize: '1.2rem', color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
+        >Go to Settings</a>
       </div>
     </div>
   );
