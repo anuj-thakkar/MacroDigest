@@ -4,17 +4,17 @@ def init_db():
     conn = sqlite3.connect('database/preferences.db')
     c = conn.cursor()
     c.execute('''
-        CREATE TABLE IF NOT EXISTS preferences (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT NOT NULL,
-            sports INTEGER DEFAULT 0,
-            entertainment INTEGER DEFAULT 0,
-            politics INTEGER DEFAULT 0,
-            economics INTEGER DEFAULT 0,
-            technology INTEGER DEFAULT 0,
-            updt_ts TIMESTAMP
-        )
-    ''')
+CREATE TABLE IF NOT EXISTS preferences (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL,
+    market_volatility_options INTEGER DEFAULT 0,
+    equities_indexes INTEGER DEFAULT 0,
+    macroeconomics INTEGER DEFAULT 0,
+    regulatory_compliance INTEGER DEFAULT 0,
+    alternative_assets_innovation INTEGER DEFAULT 0,
+    updt_ts TIMESTAMP
+)
+''')
     conn.commit()
     conn.close()
 

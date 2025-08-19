@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
 const TOPICS = [
-  { label: 'Sports', value: 'Sports' },
-  { label: 'Entertainment / Pop Culture', value: 'Entertainment / Pop Culture' },
-  { label: 'Politics', value: 'Politics' },
-  { label: 'Technology', value: 'Technology' },
-  { label: 'Business', value: 'Business' },
+  { label: 'Market Volatility & Options', value: 'Market Volatility & Options' },
+  { label: 'Equities and Indexes', value: 'Equities and Indexes' },
+  { label: 'Macroeconomics', value: 'Macroeconomics' },
+  { label: 'Regulatory & Compliance News', value: 'Regulatory & Compliance News' },
+  { label: 'Alternative Assets & Innovation', value: 'Alternative Assets & Innovation' },
 ];
 
 function SettingsPage() {
