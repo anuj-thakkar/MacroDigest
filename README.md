@@ -44,8 +44,10 @@ Daily Digest is a full-stack web app that delivers concise news summaries based 
 	```
 
 ## Usage
-- Go to `http://localhost:5000` to view and manage your preferences.
-- Go to `/settings` to update your selected topics.
+Go to `http://localhost:3000` to view and manage your preferences in the web app.
+When you enter your email and load your preferences on the main page, your selected topics and email are automatically synced across the app.
+When you navigate to the Settings page, your email and topic selections are pre-filled—no need to re-enter your email or click "Load" again.
+Update your preferences in Settings and save; changes are reflected everywhere.
 
 ## API Endpoints
 - `POST /preferences` — Save preferences
