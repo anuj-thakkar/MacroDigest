@@ -12,13 +12,12 @@ import json
 import os
 from datetime import datetime
 from flask import Blueprint, request, jsonify
-import sqlite3
 import logging
 from utils import get_user_latest_preferences
 from flask import Blueprint, request, jsonify
 from news_fetcher import fetch_news
 from summarizer import summarize_articles_from_urls
-
+from utils import save_user_preferences
 
 # News categories
 CATEGORIES = [
@@ -51,23 +50,7 @@ def save_preferences():
             topic_fields[topic] = 1
 
     try:
-        with sqlite3.connect('database/preferences.db') as conn:
-            c = conn.cursor()
-            c.execute(
-                '''INSERT INTO preferences (
-                    email, market_volatility_options, equities_indexes, macroeconomics,
-                    regulatory_compliance, alternative_assets_innovation, updt_ts
-                ) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)''',
-                (
-                    email,
-                    topic_fields['Market Volatility & Options'],
-                    topic_fields['Equities and Indexes'],
-                    topic_fields['Macroeconomics'],
-                    topic_fields['Regulatory & Compliance News'],
-                    topic_fields['Alternative Assets & Innovation']
-                )
-            )
-            conn.commit()
+        save_user_preferences(email, topic_fields)
         return jsonify({'message': 'Preferences saved successfully'})
     except Exception as e:
         logger.error(f"Error saving preferences: {e}")
